@@ -1,9 +1,8 @@
-package main
+package client
 
 import (
 	"context"
 	"crypto/tls"
-	"flag"
 	"fmt"
 	"github.com/lucas-clemente/quic-go"
 	"io"
@@ -11,26 +10,13 @@ import (
 	"net"
 )
 
-const localAddr = "127.0.0.1:1080"
-
-var host = flag.String("host", "host:port", "host port")
-
-func init() {
-	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
-}
-
-func main() {
-	flag.Parse()
-	log.Fatal(client())
-}
-
-func client() error {
-	listener, err := net.Listen("tcp", localAddr)
+func NewClient(client, host string) error {
+	listener, err := net.Listen("tcp", client)
 	if err != nil {
 		fmt.Printf("listen fail, err: %v\n", err)
 		return err
 	}
-	log.Print("socks5 bind: ", localAddr)
+	log.Print("socks5 bind: ", client)
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
@@ -38,15 +24,15 @@ func client() error {
 			continue
 		}
 		//create goroutine for each connect
-		go process(conn)
+		go process(conn, host)
 	}
 }
-func process(conn net.Conn) {
+func process(conn net.Conn, host string) {
 	tlsConf := &tls.Config{
 		InsecureSkipVerify: true,
 		NextProtos:         []string{"quic-echo-example"},
 	}
-	session, err := quic.DialAddr(*host, tlsConf, nil)
+	session, err := quic.DialAddr(host, tlsConf, nil)
 	if err != nil {
 		log.Print(err)
 		return

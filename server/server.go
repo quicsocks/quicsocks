@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"context"
@@ -15,20 +15,8 @@ import (
 	"github.com/lucas-clemente/quic-go"
 )
 
-func init() {
-	log.SetFlags(log.Ldate | log.Ltime | log.Llongfile)
-}
-
-const addr = "0.0.0.0:443"
-
-// We start a server echoing data on the first stream the client opens,
-// then connect with a client, send the message, and wait for its receipt.
-func main() {
-	log.Fatal(echoServer())
-}
-
 // Start a server that echos all data on the first stream opened by the client
-func echoServer() error {
+func NewServer(addr string) error {
 	listener, err := quic.ListenAddr(addr, generateTLSConfig(), nil)
 	if err != nil {
 		return err
