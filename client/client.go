@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
 	"github.com/lucas-clemente/quic-go"
 	"io"
 	"log"
@@ -13,14 +12,14 @@ import (
 func NewClient(client, host string) error {
 	listener, err := net.Listen("tcp", client)
 	if err != nil {
-		fmt.Printf("listen fail, err: %v\n", err)
+		log.Printf("listen fail, err: %v\n", err)
 		return err
 	}
 	log.Print("socks5 bind: ", client)
 	for {
 		conn, err := listener.Accept()
 		if err != nil {
-			fmt.Printf("accept fail, err: %v\n", err)
+			log.Printf("accept fail, err: %v\n", err)
 			continue
 		}
 		//create goroutine for each connect
