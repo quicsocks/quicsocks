@@ -4,7 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
-	"github.com/lucas-clemente/quic-go"
+	"github.com/quic-go/quic-go"
 	"io"
 	"log"
 	"net"
@@ -27,12 +27,13 @@ func NewClient(client, host string) error {
 		go process(conn, host)
 	}
 }
+
 func process(conn net.Conn, host string) {
 	tlsConf := &tls.Config{
 		InsecureSkipVerify: true,
 		NextProtos:         []string{"quic-echo-example"},
 	}
-	session, err := quic.DialAddr(host, tlsConf, nil)
+	session, err := quic.DialAddr(context.Background(), host, tlsConf, nil)
 	if err != nil {
 		log.Print(err)
 		return

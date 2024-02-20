@@ -12,7 +12,7 @@ import (
 	"net"
 
 	socks5 "github.com/armon/go-socks5"
-	"github.com/lucas-clemente/quic-go"
+	quic "github.com/quic-go/quic-go"
 )
 
 // Start a server that echos all data on the first stream opened by the client
